@@ -1,0 +1,287 @@
+-- ======= VARIABLES =======
+local plr = game.Players.LocalPlayer
+local char = plr.Character or plr.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+
+-- ======= LOADING BAR =======
+local function showLoadingBar()
+    local gui = Instance.new("ScreenGui", plr.PlayerGui)
+    gui.Name = "LoadingBarGUI"
+    
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(0,300,0,50)
+    frame.Position = UDim2.new(0.5,-150,0.5,-25)
+    frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    Instance.new("UICorner", frame)
+    
+    local bar = Instance.new("Frame", frame)
+    bar.Size = UDim2.new(0,0,1,0)
+    bar.BackgroundColor3 = Color3.fromRGB(0,170,255)
+    Instance.new("UICorner", bar)
+    
+    for i=1,100 do
+        bar.Size = UDim2.new(i/100,0,1,0)
+        task.wait(0.03)
+        if i == 60 then task.wait(2) end -- dramatic pause
+    end
+    task.wait(0.5)
+    gui:Destroy()
+end
+
+-- ======= KEY SYSTEM =======
+local keyValue = "FREE_37101836472992cb"
+local function keySystem()
+    local gui = Instance.new("ScreenGui", plr.PlayerGui)
+    gui.Name = "KeySystemGUI"
+    
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(0,300,0,120)
+    frame.Position = UDim2.new(0.5,-150,0.5,-60)
+    frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    Instance.new("UICorner", frame)
+    
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1,0,0,30)
+    title.Position = UDim2.new(0,0,0,0)
+    title.Text = "Enter Key"
+    title.TextColor3 = Color3.fromRGB(255,255,255)
+    title.BackgroundTransparency = 1
+    
+    local box = Instance.new("TextBox", frame)
+    box.Size = UDim2.new(0.85,0,0,30)
+    box.Position = UDim2.new(0.075,0,0,40)
+    box.PlaceholderText = "Key here"
+    box.TextColor3 = Color3.fromRGB(255,255,255)
+    box.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    Instance.new("UICorner", box)
+    
+    local getKey = Instance.new("TextButton", frame)
+    getKey.Size = UDim2.new(0.4,0,0,30)
+    getKey.Position = UDim2.new(0.05,0,0,80)
+    getKey.Text = "Get Key"
+    getKey.BackgroundColor3 = Color3.fromRGB(0,170,100)
+    getKey.TextColor3 = Color3.fromRGB(255,255,255)
+    Instance.new("UICorner", getKey)
+    
+    getKey.MouseButton1Click:Connect(function()
+        setclipboard(keyValue)
+    end)
+    
+    local checkKey = Instance.new("TextButton", frame)
+    checkKey.Size = UDim2.new(0.4,0,0,30)
+    checkKey.Position = UDim2.new(0.55,0,0,80)
+    checkKey.Text = "Check Key"
+    checkKey.BackgroundColor3 = Color3.fromRGB(0,170,255)
+    checkKey.TextColor3 = Color3.fromRGB(255,255,255)
+    Instance.new("UICorner", checkKey)
+    
+    checkKey.MouseButton1Click:Connect(function()
+        if box.Text == keyValue then
+            gui:Destroy()
+            createCircleGUI()
+        else
+            box.Text = ""
+            box.PlaceholderText = "Invalid Key!"
+        end
+    end)
+end
+
+-- ======= POPUP FUNCTION =======
+function runNamePopup(titleText, callback, needValue)
+    local sg = Instance.new("ScreenGui", plr.PlayerGui)
+    sg.Name = "AdminPopup"
+    
+    local f = Instance.new("Frame", sg)
+    f.Size = UDim2.new(0,260,0,140)
+    f.Position = UDim2.new(0.5,-130,0.5,-70)
+    f.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    f.Active, f.Draggable = true, true
+    Instance.new("UICorner", f)
+    
+    local t = Instance.new("TextLabel", f)
+    t.Size = UDim2.new(1,0,0,35)
+    t.Text = titleText
+    t.TextColor3 = Color3.fromRGB(255,255,255)
+    t.BackgroundTransparency = 1
+    
+    local box = Instance.new("TextBox", f)
+    box.Size = UDim2.new(0.85,0,0,30)
+    box.Position = UDim2.new(0.075,0,0,45)
+    box.PlaceholderText = "Player Name"
+    box.Text = ""
+    box.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    box.TextColor3 = Color3.fromRGB(255,255,255)
+    Instance.new("UICorner", box)
+    
+    local valueBox
+    if needValue then
+        valueBox = Instance.new("TextBox", f)
+        valueBox.Size = UDim2.new(0.85,0,0,30)
+        valueBox.Position = UDim2.new(0.075,0,0,80)
+        valueBox.PlaceholderText = "Value"
+        valueBox.Text = ""
+        valueBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        valueBox.TextColor3 = Color3.fromRGB(255,255,255)
+        Instance.new("UICorner", valueBox)
+    end
+    
+    local ok = Instance.new("TextButton", f)
+    ok.Size = UDim2.new(0.6,0,0,30)
+    ok.Position = UDim2.new(0.2,0,0,needValue and 115 or 85)
+    ok.Text = "OK"
+    ok.BackgroundColor3 = Color3.fromRGB(0,170,100)
+    ok.TextColor3 = Color3.fromRGB(255,255,255)
+    Instance.new("UICorner", ok)
+    
+    local close = Instance.new("TextButton", f)
+    close.Size = UDim2.new(0,28,0,28)
+    close.Position = UDim2.new(1,-32,0,4)
+    close.Text = "✕"
+    close.BackgroundColor3 = Color3.fromRGB(170,0,0)
+    close.TextColor3 = Color3.fromRGB(255,255,255)
+    Instance.new("UICorner", close)
+    
+    ok.MouseButton1Click:Connect(function()
+        if box.Text ~= "" then
+            if needValue then
+                callback(box.Text, valueBox.Text)
+            else
+                callback(box.Text)
+            end
+            sg:Destroy()
+        end
+    end)
+    
+    close.MouseButton1Click:Connect(function()
+        sg:Destroy()
+    end)
+end
+
+-- ======= ADMIN FUNCTIONS =======
+function freezePlayer(target)
+    if target.Character and target.Character:FindFirstChild("Humanoid") then
+        local hum = target.Character.Humanoid
+        hum.WalkSpeed = 0
+        hum.JumpPower = 0
+    end
+end
+
+function unfreezePlayer(target)
+    if target.Character and target.Character:FindFirstChild("Humanoid") then
+        local hum = target.Character.Humanoid
+        hum.WalkSpeed = 16
+        hum.JumpPower = 50
+    end
+end
+
+function setPlayerSpeed(target, speed)
+    if target.Character and target.Character:FindFirstChild("Humanoid") then
+        target.Character.Humanoid.WalkSpeed = speed
+    end
+end
+
+function flingPlayer(target, strength)
+    if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = target.Character.HumanoidRootPart
+        local bodyVel = Instance.new("BodyVelocity")
+        bodyVel.Velocity = Vector3.new(math.random(-strength,strength), strength, math.random(-strength,strength))
+        bodyVel.MaxForce = Vector3.new(1e5,1e5,1e5)
+        bodyVel.Parent = hrp
+        game.Debris:AddItem(bodyVel, 0.5)
+    end
+end
+
+function removeLag()
+    for _,v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Enabled = false end
+    end
+end
+
+-- ======= CIRCLE GUI =======
+function createCircleGUI()
+    local sg = Instance.new("ScreenGui", plr.PlayerGui)
+    sg.Name = "AdminCircleGUI"
+    
+    local circle = Instance.new("TextButton", sg)
+    circle.Size = UDim2.new(0,60,0,60)
+    circle.Position = UDim2.new(0.9,0,0.5,-30)
+    circle.Text = "ADMIN"
+    circle.BackgroundColor3 = Color3.fromRGB(0,170,255)
+    Instance.new("UICorner", circle)
+    
+    local mainOpen = false
+    local mainFrame
+    
+    circle.MouseButton1Click:Connect(function()
+        if mainOpen then
+            mainFrame:Destroy()
+            mainOpen = false
+        else
+            mainOpen = true
+            mainFrame = Instance.new("Frame", sg)
+            mainFrame.Size = UDim2.new(0,200,0,400)
+            mainFrame.Position = UDim2.new(0.7,0,0.3,0)
+            mainFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+            Instance.new("UICorner", mainFrame)
+            
+            local function addButton(name, yPos, callback)
+                local btn = Instance.new("TextButton", mainFrame)
+                btn.Size = UDim2.new(0.9,0,0,30)
+                btn.Position = UDim2.new(0.05,0,0,yPos)
+                btn.Text = name
+                btn.BackgroundColor3 = Color3.fromRGB(0,170,100)
+                btn.TextColor3 = Color3.fromRGB(255,255,255)
+                Instance.new("UICorner", btn)
+                btn.MouseButton1Click:Connect(callback)
+            end
+            
+            addButton("Freeze Player", 20, function()
+                runNamePopup("Freeze Player", function(name)
+                    for _,p in pairs(game.Players:GetPlayers()) do
+                        if p.Name:lower():sub(1,#name) == name:lower() then
+                            freezePlayer(p)
+                        end
+                    end
+                end)
+            end)
+            
+            addButton("Unfreeze Player", 60, function()
+                runNamePopup("Unfreeze Player", function(name)
+                    for _,p in pairs(game.Players:GetPlayers()) do
+                        if p.Name:lower():sub(1,#name) == name:lower() then
+                            unfreezePlayer(p)
+                        end
+                    end
+                end)
+            end)
+            
+            addButton("Set Player Speed", 100, function()
+                runNamePopup("Set Speed", function(name, value)
+                    local speed = tonumber(value)
+                    for _,p in pairs(game.Players:GetPlayers()) do
+                        if p.Name:lower():sub(1,#name) == name:lower() then
+                            setPlayerSpeed(p, speed)
+                        end
+                    end
+                end, true)
+            end)
+            
+            addButton("Fling Player", 140, function()
+                runNamePopup("Fling Player", function(name, value)
+                    local strength = tonumber(value)
+                    for _,p in pairs(game.Players:GetPlayers()) do
+                        if p.Name:lower():sub(1,#name) == name:lower() then
+                            flingPlayer(p, strength)
+                        end
+                    end
+                end, true)
+            end)
+            
+            addButton("Remove Lag", 180, removeLag)
+        end
+    end)
+end
+
+-- ======= RUN SCRIPT =======
+showLoadingBar()
+keySystem()
